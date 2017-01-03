@@ -46,10 +46,7 @@ class Form(QDialog):
         f=keypad_Mdl.keypadForm(obj)
         f.exec_()
         self.dgBool=False
-        a=f.degerAl()
-        if a[1]==True:
-            pass
-            #self.txtBox.setText(a[0])
+        print(self.dgBool)
 
 if __name__ == '__main__':
     app=QApplication(sys.argv)

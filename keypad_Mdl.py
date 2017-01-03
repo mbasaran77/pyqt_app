@@ -16,7 +16,8 @@ class keypadForm(QDialog,keypadN.Ui_Dialog):
         self.btn_list=[self.pushButton,self.pushButton_2,self.pushButton_3,self.pushButton_4,
                        self.pushButton_5,self.pushButton_6,self.pushButton_7,self.pushButton_8,
                        self.pushButton_9,self.pushButton_10,self.pushButton_11]
-        self.girilenDeger=''
+        self.lineEdit.setText(self.f_obj.text())
+        self.girilenDeger=self.f_obj.text()
         self.onay=False
         self.my_tuple=(self.girilenDeger,self.onay)
         for obj in self.btn_list:
@@ -24,7 +25,7 @@ class keypadForm(QDialog,keypadN.Ui_Dialog):
             obj.clicked.connect(self.degerGirise)
 
         self.pushButton_14.clicked.connect(self.onayDeger)
-        self.pushButton_12.clicked.connect(self.close)
+        self.pushButton_12.clicked.connect(self.kapatForm)
         self.pushButton_13.clicked.connect(self.degerSil)
         self.pushButton_15.clicked.connect(self.temizle)
 
@@ -43,6 +44,7 @@ class keypadForm(QDialog,keypadN.Ui_Dialog):
             self.onay=True
             self.my_tuple=(self.girilenDeger,self.onay)
             self.f_obj.setText(self.girilenDeger)
+            self.f_obj.clearFocus()
             self.close()
 
     def degerSil(self):
@@ -58,6 +60,10 @@ class keypadForm(QDialog,keypadN.Ui_Dialog):
 
     def degerAl(self):
         return self.my_tuple
+
+    def kapatForm(self):
+        self.f_obj.clearFocus()
+        self.close()
 
 
 if __name__ == '__main__':
