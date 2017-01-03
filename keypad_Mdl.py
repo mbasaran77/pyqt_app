@@ -8,9 +8,9 @@ import keypadN
 
 
 class keypadForm(QDialog,keypadN.Ui_Dialog):
-    def __init__(self):
+    def __init__(self,f_obj):
         super(keypadForm, self).__init__()
-
+        self.f_obj=f_obj
         self.setupUi(self)
 
         self.btn_list=[self.pushButton,self.pushButton_2,self.pushButton_3,self.pushButton_4,
@@ -42,6 +42,7 @@ class keypadForm(QDialog,keypadN.Ui_Dialog):
         if not (self.girilenDeger=='' or self.girilenDeger==None):
             self.onay=True
             self.my_tuple=(self.girilenDeger,self.onay)
+            self.f_obj.setText(self.girilenDeger)
             self.close()
 
     def degerSil(self):

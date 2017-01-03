@@ -21,7 +21,13 @@ class Form(QDialog):
         self.lbl.move(50,80)
 
         self.txtBox=QLineEdit(self)
+        self.txtBox.move(50,0)
         self.txtBox.installEventFilter(self)
+
+        self.txtBox_1=QLineEdit(self)
+        self.txtBox_1.move(50,20)
+        self.txtBox_1.installEventFilter(self)
+
         self.dgBool=False
 
     def eventFilter(self, QObject, QEvent):
@@ -29,20 +35,21 @@ class Form(QDialog):
             print(QObject)
             print(QEvent)
             self.dgBool=True
-            self.showKeyP()
+            self.showKeyP(QObject)
         return False
             #if QEvent=
 
     def deneme(self):
         self.lbl.setText("ne haber")
 
-    def showKeyP(self):
-        f=keypad_Mdl.keypadForm()
+    def showKeyP(self,obj):
+        f=keypad_Mdl.keypadForm(obj)
         f.exec_()
         self.dgBool=False
         a=f.degerAl()
         if a[1]==True:
-            self.txtBox.setText(a[0])
+            pass
+            #self.txtBox.setText(a[0])
 
 if __name__ == '__main__':
     app=QApplication(sys.argv)
