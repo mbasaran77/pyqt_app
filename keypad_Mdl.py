@@ -1,6 +1,7 @@
 
 
 from PyQt5.QtWidgets import QDialog,QApplication
+from PyQt5.QtGui import QValidator
 #from PyQt5.QtCore import QObject
 from functools import partial
 import sys
@@ -45,6 +46,7 @@ class keypadForm(QDialog,keypadN.Ui_Dialog):
             self.my_tuple=(self.girilenDeger,self.onay)
             self.f_obj.setText(self.girilenDeger)
             self.f_obj.clearFocus()
+            self.f_obj.setReadOnly(True)
             self.close()
 
     def degerSil(self):
@@ -63,6 +65,7 @@ class keypadForm(QDialog,keypadN.Ui_Dialog):
 
     def kapatForm(self):
         self.f_obj.clearFocus()
+        self.f_obj.setReadOnly(True)
         self.close()
 
 

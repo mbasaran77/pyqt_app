@@ -1,9 +1,9 @@
 
 
 from PyQt5.QtWidgets import QWidget,QPushButton,QLabel,QApplication,QLineEdit,QDialog
-from PyQt5.QtGui import  QFocusEvent
-from PyQt5.QtCore import QEvent
-from PyQt5.QtCore import *
+from PyQt5.QtGui import  QDoubleValidator
+from PyQt5.Qt import *
+
 import keypad_Mdl
 import sys
 
@@ -14,18 +14,25 @@ class Form(QDialog):
     def __init__(self):
         super(Form, self).__init__()
 
+
         btn=QPushButton("deneme",self)
-        btn.move(50,50)
+        btn.move(50,60)
         self.lbl=QLabel("mehmet    ",self)
         btn.clicked.connect(self.deneme)
-        self.lbl.move(50,80)
+        self.lbl.move(50,90)
 
         self.txtBox=QLineEdit(self)
-        self.txtBox.move(50,0)
+        self.txtBox.move(50,5)
         self.txtBox.installEventFilter(self)
 
+
+        self.floatValidator=QDoubleValidator(0.00,10000.00,2)
+        self.floatValidator.setNotation(QDoubleValidator.StandardNotation)
+        self.txtBox.setValidator(self.floatValidator)
+
+
         self.txtBox_1=QLineEdit(self)
-        self.txtBox_1.move(50,20)
+        self.txtBox_1.move(50,30)
         self.txtBox_1.installEventFilter(self)
 
         self.dgBool=False
@@ -37,7 +44,12 @@ class Form(QDialog):
             self.dgBool=True
             self.showKeyP(QObject)
         return False
-            #if QEvent=
+
+    def focusOutEvent(self, QFocusEvent):
+        print(QFocusEvent)
+        pass
+
+
 
     def deneme(self):
         self.lbl.setText("ne haber")
