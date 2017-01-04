@@ -1,7 +1,7 @@
 
 
 from PyQt5.QtWidgets import QDialog,QApplication
-from PyQt5.QtGui import QValidator
+from PyQt5.QtGui import QValidator,QDoubleValidator
 #from PyQt5.QtCore import QObject
 from functools import partial
 import sys
@@ -18,6 +18,12 @@ class keypadForm(QDialog,keypadN.Ui_Dialog):
                        self.pushButton_5,self.pushButton_6,self.pushButton_7,self.pushButton_8,
                        self.pushButton_9,self.pushButton_10,self.pushButton_11]
         self.lineEdit.setText(self.f_obj.text())
+        self.lineEdit=self.f_obj
+        # par_validator=self.f_obj.validator()
+        # par_validator.setNotation(QDoubleValidator.StandardNotation)
+        # self.lineEdit.setValidator(par_validator)
+
+        # print(self.f_obj.validator())
         self.girilenDeger=self.f_obj.text()
         self.onay=False
         self.my_tuple=(self.girilenDeger,self.onay)
@@ -37,11 +43,13 @@ class keypadForm(QDialog,keypadN.Ui_Dialog):
         self.girilenDeger+=sender.text()
         self.lineEdit.setText(self.girilenDeger)
 
-        print(sender.text())
-        print(self.girilenDeger)
+        # print(sender.text())
+        # print(self.girilenDeger)
 
     def onayDeger(self):
         if not (self.girilenDeger=='' or self.girilenDeger==None):
+            # a=self.degerKontrol(self.f_obj, self.girilenDeger)
+            # if a==True:
             self.onay=True
             self.my_tuple=(self.girilenDeger,self.onay)
             self.f_obj.setText(self.girilenDeger)
@@ -68,6 +76,14 @@ class keypadForm(QDialog,keypadN.Ui_Dialog):
         self.f_obj.setReadOnly(True)
         self.close()
 
+    # def degerKontrol(self, obj, text):
+    #     state = obj.validator.validate(text, 0)[0]
+    #     if "," in text:
+    #         return (False,"virgül yerine nokta kullanılmalı")
+    #     elif state ==QValidator.Intermediate:
+    #         return (False,"girilen desen boyu belirlenen aralıkta değil")
+    #     else:
+    #         return (True,"başarılı")
 
 if __name__ == '__main__':
     app=QApplication(sys.argv)

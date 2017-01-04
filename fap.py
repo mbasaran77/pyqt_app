@@ -1,7 +1,7 @@
 
 
 from PyQt5.QtWidgets import QWidget,QPushButton,QLabel,QApplication,QLineEdit,QDialog
-from PyQt5.QtGui import  QDoubleValidator
+from PyQt5.QtGui import  QDoubleValidator,QValidator,QIntValidator
 from PyQt5.Qt import *
 
 import keypad_Mdl
@@ -26,14 +26,22 @@ class Form(QDialog):
         self.txtBox.installEventFilter(self)
 
 
-        self.floatValidator=QDoubleValidator(0.00,10000.00,2)
+        self.floatValidator=QDoubleValidator(0.00,1000.00,2)
         self.floatValidator.setNotation(QDoubleValidator.StandardNotation)
         self.txtBox.setValidator(self.floatValidator)
+
+        self.intValidator=QIntValidator(0,1000)
 
 
         self.txtBox_1=QLineEdit(self)
         self.txtBox_1.move(50,30)
         self.txtBox_1.installEventFilter(self)
+
+
+        self.txtBox_2=QLineEdit(self)
+        self.txtBox_2.move(50,110)
+        self.txtBox_2.setValidator(self.intValidator)
+        self.txtBox_2.textChanged.connect(self.degerKontrol)
 
         self.dgBool=False
 
@@ -52,6 +60,7 @@ class Form(QDialog):
 
 
     def deneme(self):
+        self.txtBox_2.setText("15000")
         self.lbl.setText("ne haber")
 
     def showKeyP(self,obj):
@@ -59,6 +68,28 @@ class Form(QDialog):
         f.exec_()
         self.dgBool=False
         print(self.dgBool)
+
+    def degerKontrol(self):
+        print("deger kontrol")
+        ch=checkIsFloat(self.txtBox_2.text(),self.intValidator)
+        a=ch.checkText()
+        print("sonuç :",a)
+
+class  checkIsFloat():
+    def __init__(self,text,validator):
+        self.text=text
+        self.validator=validator
+
+
+    def checkText(self):
+        text=self.text
+        state = self.validator.validate(self.text, 0)[0]
+        if "," in text:
+            return (False,"virgül yerine nokta kullanılmalı")
+        elif state ==QValidator.Intermediate:
+            return (False,"girilen desen boyu belirlenen aralıkta değil")
+        else:
+            return (True,"başarılı")
 
 if __name__ == '__main__':
     app=QApplication(sys.argv)
