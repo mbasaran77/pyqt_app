@@ -52,7 +52,7 @@ class recete_list(QDialog):
     def ekle(self):
         bas=self.txt_bas.text()
         bit=self.txt_son.text()
-        self.desen.ekle(bas,bit)
+        self.desen.ekle(self.color,bas,bit)
         self.gun_liste()
     def list_w_click_item(self):
         index=self.list_w.currentRow()
@@ -102,18 +102,23 @@ class color_list():
             if max_l==0 or int(bas)>=max_l:
                 self.my_dict[self.id] = [color, bas, bit]
                 self.id += 1
-            elif bit(int)<max_l:
+            elif int(bit)<max_l:
                 self.desen_uzat(color,bas,bit)
-                pass
+                self.my_dict[self.id] = [color, bas, bit]
+                self.id += 1
 
         def desen_uzat(self,color,bas,bit):
             fark=int(bit)-int(bas)
             for a in self.my_dict:
                 renk, bas_r, son_r = self.my_dict[a]
-                if
+                if int(bas_r)>=int(bas):
+                    x,y=(int(bas_r)+fark),((int(son_r)+fark))
+                    self.my_dict[a]=[renk,x,y]
+        def desen_sirala(self):
+            for a in self.my_dict:
+                renk,bas,son=self.my_dict[a]
+                #burada siralama yapılacak
 
-
-            pass
 
         def kaldir(self, id):
             if len(self.my_dict) >= 1:
