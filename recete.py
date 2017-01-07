@@ -4,7 +4,7 @@ import sys
 
 import pickle
 from pyModbusTCP import utils
-mydict = {0: ['renk 1', 0, 50], 1: ['renk 1', 60, 80], 2: ['renk 1', 120, 150], 3: ['renk 1', 160, 200]}
+mydict = {0: [0, 50], 1: [60, 80], 2: [120, 150], 3: [160, 200]}
 
 
 
@@ -16,6 +16,7 @@ class recete_list(QDialog):
         super(recete_list, self).__init__()
         self.color=color
         self.color="Renk 1"
+        self.list_w_index=0
         self.list_w=QListWidget(self)
         self.btn_ekle=QPushButton("ekle",self)
         self.btn_sil=QPushButton("sil",self)
@@ -52,29 +53,31 @@ class recete_list(QDialog):
     def ekle(self):
         bas=self.txt_bas.text()
         bit=self.txt_son.text()
-        self.desen.ekle(self.color,bas,bit)
+        self.desen.ekle(bas,bit)
         self.gun_liste()
+
     def list_w_click_item(self):
         index=self.list_w.currentRow()
-        item=self.list_w.currentItem()
-        print(index,item.text())
-        return (index,item.text())
+        a=self.desen.my_dict[index]
+        self.txt_bas.setText(str(a[0]))
+        self.txt_son.setText(str(a[1]))
+        self.list_w_index=index
 
 
     def edit(self):
-        index,text=self.list_w_click_item()
-        self.desen.desen_kontrol()
-        print(index)
+        max_l=self.desen.desen_kontrol()
 
+        self.desen.duzenle(self.list_w_index, self.txt_bas.text(),self.txt_son.text())
+        self.gun_liste()
 
-        pass
 
     def sil(self):
-        index,text=self.list_w_click_item()
+        index=self.list_w_index
         self.desen.kaldir(index)
         self.gun_liste()
 
     def gun_liste(self):
+        self.desen.desen_sirala()
         self.list_w.clear()
         rec=self.desen.recete()
         print("---------------------------------------")
@@ -82,9 +85,9 @@ class recete_list(QDialog):
 
 
         for i in range(len(rec)):
-            txt=str(rec[i])
+            bas, son = rec[i]
+            txt = 'satır {:<4}'.format(str(i)) + '{:<6}'.format(str(bas)) + '{:<4}'.format(str(son))
             self.list_w.addItem(txt)
-
 
 
 class color_list():
@@ -97,28 +100,53 @@ class color_list():
             self.my_dict = sdict
             self.id = len(self.my_dict)
 
-        def ekle(self, color, bas, bit):
+        def ekle(self, bas, bit):
             max_l=self.desen_kontrol()
             if max_l==0 or int(bas)>=max_l:
-                self.my_dict[self.id] = [color, bas, bit]
+                self.my_dict[self.id] = [bas, bit]
                 self.id += 1
             elif int(bit)<max_l:
-                self.desen_uzat(color,bas,bit)
-                self.my_dict[self.id] = [color, bas, bit]
+                self.desen_uzat(bas,bit)
+                self.my_dict[self.id] = [bas, bit]
                 self.id += 1
 
-        def desen_uzat(self,color,bas,bit):
+        def desen_uzat(self,bas,bit,index=0):
             fark=int(bit)-int(bas)
-            for a in self.my_dict:
-                renk, bas_r, son_r = self.my_dict[a]
-                if int(bas_r)>=int(bas):
-                    x,y=(int(bas_r)+fark),((int(son_r)+fark))
-                    self.my_dict[a]=[renk,x,y]
-        def desen_sirala(self):
-            for a in self.my_dict:
-                renk,bas,son=self.my_dict[a]
-                #burada siralama yapılacak
+            if index==0:
+                for a in self.my_dict:
+                    bas_r, son_r = self.my_dict[a]
+                    if int(bas_r)>=int(bas):
+                        x,y=(int(bas_r)+fark),((int(son_r)+fark))
+                        self.my_dict[a]=[x,y]
+            else:
+                b_r,s_r=self.my_dict[index]
+                fark=fark-(s_r-b_r)
+                for a in range(index,len(self.my_dict)):
+                    bas_r, son_r = self.my_dict[a]
+                    x, y = (int(bas_r) + fark), ((int(son_r) + fark))
+                    self.my_dict[a] = [x, y]
+        def desen_kisalt(self):
+            pass
 
+        def desen_sirala(self):
+            list_sort=[]
+            for a in self.my_dict:
+                bas,son=self.my_dict[a]
+                list_sort.append([int(bas),int(son)])
+            list_sort.sort()
+            for i in range(len(list_sort)):
+                self.my_dict[i]=list_sort[i]
+
+            print("sıralı liste ",list_sort)
+
+                #burada siralama yapılacak
+        def duzenle(self,index,bas,son):
+            bas_r,son_r=self.my_dict[index]
+            if int(son)>int(son_r):
+                self.desen_uzat(bas,son,index)
+                self.my_dict[index]=[bas,son]
+            else:
+                self.my_dict[index] = [bas, son]
 
         def kaldir(self, id):
             if len(self.my_dict) >= 1:
@@ -150,7 +178,7 @@ class color_list():
             if len(self.my_dict)>0:
                 max_l =0
                 for a in range(len(self.my_dict)):
-                    renk,bas,son=self.my_dict[a]
+                    bas,son=self.my_dict[a]
                     if max_l<=int(son):
                         max_l=int(son)
             else:
