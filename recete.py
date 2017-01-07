@@ -110,21 +110,27 @@ class color_list():
                 self.my_dict[self.id] = [bas, bit]
                 self.id += 1
 
-        def desen_uzat(self,bas,bit,index=0):
+        def desen_uzat(self,bas,bit,index=None):
             fark=int(bit)-int(bas)
-            if index==0:
+            if index==None: #index yoksa uzatma işlemi direk ekle için geçerli
                 for a in self.my_dict:
                     bas_r, son_r = self.my_dict[a]
                     if int(bas_r)>=int(bas):
                         x,y=(int(bas_r)+fark),((int(son_r)+fark))
                         self.my_dict[a]=[x,y]
-            else:
+            else: #index varsa uzatma veya kısatma işlemi
                 b_r,s_r=self.my_dict[index]
                 fark=fark-(s_r-b_r)
-                for a in range(index,len(self.my_dict)):
-                    bas_r, son_r = self.my_dict[a]
-                    x, y = (int(bas_r) + fark), ((int(son_r) + fark))
-                    self.my_dict[a] = [x, y]
+                if fark>0:
+                    for a in range(index,len(self.my_dict)):
+                        bas_r, son_r = self.my_dict[a]
+                        x, y = (int(bas_r) + fark), ((int(son_r) + fark))
+                        self.my_dict[a] = [x, y]
+                elif fark<0: #fark eksiyse kısaltma gerekli demektir
+                    for a in range(index,len(self.my_dict)):
+                        bas_r, son_r = self.my_dict[a]
+                        x, y = (int(bas_r) + fark), ((int(son_r) + fark))
+                        self.my_dict[a] = [x, y]
         def desen_kisalt(self):
             pass
 
@@ -142,11 +148,14 @@ class color_list():
                 #burada siralama yapılacak
         def duzenle(self,index,bas,son):
             bas_r,son_r=self.my_dict[index]
-            if int(son)>int(son_r):
-                self.desen_uzat(bas,son,index)
-                self.my_dict[index]=[bas,son]
-            else:
-                self.my_dict[index] = [bas, son]
+            self.desen_uzat(bas, son, index)
+            self.my_dict[index] = [bas, son]
+
+            # if int(son)>int(son_r):
+            #     self.desen_uzat(bas,son,index)
+            #     self.my_dict[index]=[bas,son]
+            # else:
+            #     self.my_dict[index] = [bas, son]
 
         def kaldir(self, id):
             if len(self.my_dict) >= 1:

@@ -11,13 +11,15 @@ mydict = {0: [100, 0], 1: [60, 1], 2: [20, 0], 3: [160, 1]}
 
 
 den_list=[(0,10),(20,30),(50,85)]
+import keypad_Mdl
 
 class pop_up(QDialog):
     def __init__(self):
         super(pop_up, self).__init__()
         self.dolu_bos=0
-
+        self.dgBool=False
         self.txt_1=QLineEdit()
+        self.txt_1.installEventFilter(self)
         self.tool_b=QPushButton("Boş",self)
         self.btn_kayit=QPushButton("kayıt",self)
         self.btn_iptal=QPushButton("iptal",self)
@@ -38,6 +40,19 @@ class pop_up(QDialog):
         lay_v_0.addItem(lay_h_0)
         lay_v_0.addItem(lay_h_1)
         self.setLayout(lay_v_0)
+
+    def eventFilter(self, QObject, QEvent):
+        if QEvent.type()==QEvent.FocusIn and self.dgBool==False:
+            print(QObject)
+            print(QEvent)
+            self.dgBool=True
+            self.showKeyP(QObject)
+        return False
+    def showKeyP(self,obj):
+        f=keypad_Mdl.keypadForm(obj)
+        f.exec_()
+        self.dgBool=False
+        print(self.dgBool)
 
     def bos_dolu_sec(self):
         if self.dolu_bos==0:
@@ -95,6 +110,8 @@ class recete_list(QDialog):
     def list_w_click_item(self):
         index=self.list_w.currentRow()
         item=self.list_w.currentItem()
+
+
         print(index,item.text())
         return (index,item.text())
 
@@ -115,7 +132,7 @@ class recete_list(QDialog):
 
     def sil(self):
         index,text=self.list_w_click_item()
-        self.desen.kaldir(index)
+        self.desen.sil(index)
         self.gun_liste()
 
     def gun_liste(self):
