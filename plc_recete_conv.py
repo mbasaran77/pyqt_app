@@ -121,12 +121,13 @@ print(sorted_recete)
 pl = find_pl(skaled_recete)
 # pattern length listesi başlangış
 list_pl = init_pl(pl, off_set, skala)
+print(list_pl)
 
 index = 0
 hsc = 0
 kafa_sozluk = {10: 0, 11: 0, 20: 1, 21: 1, 30: 2, 31: 2, 40: 3, 41: 3, 50: 4, 51: 4,
                60: 5, 61: 5, 70: 6, 71: 6, 80: 7, 81: 7}
-while hsc < 70000:  # 00000:
+while hsc < 40000:  # 00000:
     if index >= recete_sonu:
         index = 0
         print("sıfırlandı")
@@ -134,17 +135,21 @@ while hsc < 70000:  # 00000:
         print("index : ", index)
         print(sorted_recete[index][0])
         print(sorted_recete[index][1])
-        for i in range(index, recete_sonu-1):
-            if sorted_recete[i][1] == sorted_recete[i+1][1]:
-                yeni_hedef = hedef_guncelle(sorted_recete[i][1], sorted_recete[i][0], list_pl)
-                sorted_recete[i+1][1] = yeni_hedef
-                index += 1
-                
-        yeni_hedef  = hedef_guncelle(sorted_recete[index][1], sorted_recete[index][0], list_pl)
+        eski_hedef = sorted_recete[index][1]
+        yeni_hedef = hedef_guncelle(sorted_recete[index][1], sorted_recete[index][0], list_pl)
         sorted_recete[index][1] = yeni_hedef
         print(sorted_recete[index][1])
         index += 1
+        fw_ind = 0
+        for i in range(index, recete_sonu):
+            if eski_hedef == sorted_recete[i][1]:
+                print("eşitlik",eski_hedef, sorted_recete[i][1]  )
+                yeni_hedef = hedef_guncelle(sorted_recete[i][1], sorted_recete[i][0], list_pl)
+                sorted_recete[i][1] = yeni_hedef
+                fw_ind += 1
+        if fw_ind != 0:
+            index = index + fw_ind
     hsc += 1
-print("index = ", index)
+
 print(hsc)
 print(sorted_recete)
