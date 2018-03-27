@@ -52,7 +52,7 @@ def recete_skala(list_renk, list_offset, skala):
     return sonuc
 
 
-def recete_sirala(s_liste_renk):
+def recete_ikili_sirala(s_liste_renk):
     """
     recete değerlerine x0 stop ve x1 start olarak ekleyip mesafeye
     göre sıralama yapıyor
@@ -63,6 +63,10 @@ def recete_sirala(s_liste_renk):
     i1 = 11
     i0 = 10
     temp = []
+    temp_1 = []
+    temp_2 = []
+    temp_3 = []
+    temp_4 = []
     for any_list in s_liste_renk:
         c = 0
         for any in any_list:
@@ -74,13 +78,28 @@ def recete_sirala(s_liste_renk):
                 c += 1
         i1 += 10
         i0 += 10
+    for any in temp:
+        if any[0] in (10, 11, 20, 21):
+            temp_1.append(any)
+        if any[0] in (30, 31, 40, 41):
+            temp_2.append(any)
+        if any[0] in (50, 51, 60, 61):
+            temp_3.append(any)
+        if any[0] in (70, 71, 80, 81):
+            temp_4.append(any)
+
     dtype = [('start', int), ('mesafe', float)]
-    temp_np_arr = np.array(temp, dtype=dtype)
-    sonuc = np.sort(temp_np_arr, order='mesafe')
-    return sonuc
+    temp_np_arr_1 = np.array(temp_1, dtype=dtype)
+    temp_np_arr_2 = np.array(temp_2, dtype=dtype)
+    temp_np_arr_3 = np.array(temp_3, dtype=dtype)
+    temp_np_arr_4 = np.array(temp_4, dtype=dtype)
+    sonuc_1 = np.sort(temp_np_arr_1, order='mesafe')
+    sonuc_2 = np.sort(temp_np_arr_2, order='mesafe')
+    sonuc_3 = np.sort(temp_np_arr_3, order='mesafe')
+    sonuc_4 = np.sort(temp_np_arr_4, order='mesafe')
+    return sonuc_1, sonuc_2, sonuc_3, sonuc_4
 
-
-def find_pl(s_liste_renk):
+def find_pl(s_liste_renk, skala):
     """
     skalalanmış listeyi alır ve maks uzunluğu
     geri döndürür
@@ -93,63 +112,75 @@ def find_pl(s_liste_renk):
         if temp_max_l > pl:
             pl = temp_max_l
     print("pattern length ", pl)
-    return pl
+    return pl * skala
 
+class BASKI():
+    kafa_sozluk = {10: "sil 1 of", 11: "sil 1 on", 20: "sil 2 of", 21: "sil 2 on", 30: "sil 3 of", 31: "sil 3 on", 40: "sil 4 of", 41: "sil 4 on",
+                   50: "sil 5 of", 51: "sil 5 on", 60: "sil 6 of", 61: "sil 6 on", 70: "sil 7 of", 71: "sil 7 on", 80: "sil 8 of", 81: "sil 8 on"}
 
-def init_pl(pl, list_offset, skala):
-    list_pl = []
-    for i in range(8):
-        list_pl.append(pl + list_offset[i] * skala)
-    return list_pl
+    def __init__(self, recete, pl):
+        self.recete = recete
+        self.index = 0
+        self.recete_sonu = len(recete)
+        self.pl = pl
+    def bas(self, hsc):
+        if self.index >= self.recete_sonu:
+            self.index = 0
+        if hsc == self.recete[self.index][1]:
+            self.sil_kont()
+            eski_hedef = self.recete[self.index][1]
+            yeni_hedef = self.recete[self.index][1] + self.pl
+            self.recete[self.index][1] = yeni_hedef
+            self.index += 1
+            fw_ind = 0
+            for i in range(self.index, self.recete_sonu):
+                if eski_hedef == self.recete[i][1]:
+                    yeni_hedef = self.recete[self.index][1] + self.pl
+                    self.recete[i][1] = yeni_hedef
+                    fw_ind += 1
+            if fw_ind != 0:
+                self.index = self.index + fw_ind
+    def sil_kont(self):
+        print(self.kafa_sozluk[self.recete[self.index][0]])
 
-
-def hedef_guncelle(mesafe, kafa, list_pl):
-    kafa_sozluk = {10: 0, 11: 0, 20: 1, 21: 1, 30: 2, 31: 2, 40: 3, 41: 3, 50: 4, 51: 4,
-                   60: 5, 61: 5, 70: 6, 71: 6, 80: 7, 81: 7}
-    print("pl : ", list_pl[kafa_sozluk[kafa]])
-    hedef = mesafe + list_pl[kafa_sozluk[kafa]]
-    return hedef
+    def get_recete(self):
+        return self.recete
 
 
 liste_renk = recete_dict_to_renk(recete_dict)
 skaled_recete = recete_skala(liste_renk, off_set, skala)
-print(skaled_recete)
-sorted_recete = recete_sirala(skaled_recete)
-recete_sonu = len(sorted_recete)
+
+sorted_recete, sorted_recete_1, sorted_recete_2, sorted_recete_3 = recete_ikili_sirala(skaled_recete)
+# recete_sonu = len(sorted_recete)
 print(sorted_recete)
 # pattern length bulunuyor
-pl = find_pl(skaled_recete)
+pl = find_pl(liste_renk, skala)
+print("pl : ", pl)
 # pattern length listesi başlangış
-list_pl = init_pl(pl, off_set, skala)
-print(list_pl)
+
+
 
 index = 0
+index_1 = 0
 hsc = 0
 kafa_sozluk = {10: 0, 11: 0, 20: 1, 21: 1, 30: 2, 31: 2, 40: 3, 41: 3, 50: 4, 51: 4,
                60: 5, 61: 5, 70: 6, 71: 6, 80: 7, 81: 7}
-while hsc < 40000:  # 00000:
-    if index >= recete_sonu:
-        index = 0
-        print("sıfırlandı")
-    if hsc == sorted_recete[index][1]:
-        print("index : ", index)
-        print(sorted_recete[index][0])
-        print(sorted_recete[index][1])
-        eski_hedef = sorted_recete[index][1]
-        yeni_hedef = hedef_guncelle(sorted_recete[index][1], sorted_recete[index][0], list_pl)
-        sorted_recete[index][1] = yeni_hedef
-        print(sorted_recete[index][1])
-        index += 1
-        fw_ind = 0
-        for i in range(index, recete_sonu):
-            if eski_hedef == sorted_recete[i][1]:
-                print("eşitlik",eski_hedef, sorted_recete[i][1]  )
-                yeni_hedef = hedef_guncelle(sorted_recete[i][1], sorted_recete[i][0], list_pl)
-                sorted_recete[i][1] = yeni_hedef
-                fw_ind += 1
-        if fw_ind != 0:
-            index = index + fw_ind
+
+kafa_0_1 = BASKI(sorted_recete, pl)
+kafa_2_3 = BASKI(sorted_recete_1, pl)
+kafa_4_5 = BASKI(sorted_recete_2, pl)
+kafa_6_7 = BASKI(sorted_recete_3, pl)
+
+while hsc < 8090:  # 00000:
+    kafa_0_1.bas(hsc)
+    kafa_2_3.bas(hsc)
+    kafa_4_5.bas(hsc)
+    kafa_6_7.bas(hsc)
     hsc += 1
 
-print(hsc)
-print(sorted_recete)
+
+print(kafa_0_1.get_recete())
+print(kafa_2_3.get_recete())
+print(kafa_4_5.get_recete())
+print(kafa_6_7.get_recete())
+

@@ -27,7 +27,7 @@ mesafe, head_map = get_length(recete)
 
 def hesap_yeni_hedef(mesafe, head_map, pl_list):
 
-    for i in range(3):
+    for i in range(1):
         sonuc = []
         for j in range(len(mesafe)):
             print(mesafe[j],  pl_list[kafa_sozluk[head_map[j]]])
