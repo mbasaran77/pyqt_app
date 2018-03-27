@@ -34,4 +34,5 @@ def hesap_yeni_hedef(mesafe, head_map, pl_list):
             sonuc.append(mesafe[j] + pl_list[kafa_sozluk[head_map[j]]])
     print(sonuc)
 
+
 hesap_yeni_hedef(mesafe, head_map, pl_list)
