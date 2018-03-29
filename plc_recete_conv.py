@@ -99,6 +99,27 @@ def recete_ikili_sirala(s_liste_renk):
     sonuc_4 = np.sort(temp_np_arr_4, order='mesafe')
     return sonuc_1, sonuc_2, sonuc_3, sonuc_4
 
+
+def make_key_arr(ikili_dizi):
+    """
+    bu fonksiyon ikili dizileri alır ve plc için dizilein başlangıç ve sonu bulur
+    yalnız bu float dizi int yapıldıktan sonra mı olmalı ??
+    :param ikili_dizi:
+    :return:
+    """
+    key_arr = []
+    start = 0
+    for any_list in ikili_dizi:
+        key_arr.append(start)
+        stop = start + len(any_list) - 1
+        key_arr.append(stop)
+        start = stop + 1
+    return key_arr
+
+def make_int_arr(ikili_dizi):
+    pass
+
+
 def find_pl(s_liste_renk, skala):
     """
     skalalanmış listeyi alır ve maks uzunluğu
@@ -158,7 +179,7 @@ pl = find_pl(liste_renk, skala)
 print("pl : ", pl)
 # pattern length listesi başlangış
 
-
+print("key_arr = ", make_key_arr(recete_ikili_sirala(skaled_recete)))
 
 index = 0
 index_1 = 0
