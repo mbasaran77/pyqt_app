@@ -33,9 +33,9 @@ class MakePlcArr():
         cylinder_arr, recete_plc_float = self.make_cylinder_recete(list_sorted_recete)
         print(key_arr)
         print(cylinder_arr)
-        print(recete_plc_float)
+        print(len(recete_plc_float) ,recete_plc_float)
         plc_arr_int = self.make_float_to_16_int_arr(recete_plc_float)
-        print(plc_arr_int)
+        print(len(plc_arr_int)  ,plc_arr_int)
         return cylinder_arr, key_arr, plc_arr_int
     def recete_dict_to_list_renk(self, dict_recete):
         """
@@ -186,7 +186,7 @@ def hazirla_dizi_to_write(d_list):
     return r_list
 
 
-def plcGonder(recete_dizi, anahtar_dizi):
+def plcGonder(recete_dizi, anahtar_dizi, silindir_dizi):
     client_host = "192.168.250.3"
     client_port = 502
     c = ModbusClient()
@@ -200,10 +200,29 @@ def plcGonder(recete_dizi, anahtar_dizi):
             # QMessageBox.warning(self, __appname__, text)
     if c.is_open():
         # self.prgBarRec.setValue(50)
+        a = c.write_multiple_registers(200, anahtar_dizi)
+        if a is None or a is False:
+            err_list.append(False)
+
+        if len(silindir_dizi) > 120:
+            recete = hazirla_dizi_to_write(silindir_dizi)
+            i = 0
+            hedef_reg_taban = 208
+            for send_recete in recete:
+                hedef_reg = hedef_reg_taban + (i * 120)
+                a = c.write_multiple_registers(hedef_reg, send_recete)
+                if a is None or a == False:
+                    err_list.append(False)
+                i += 1
+        else:
+            a = c.write_multiple_registers(208, silindir_dizi)
+            if a is None or a is False:
+                err_list.append(False)
+
         if len(recete_dizi) > 120:
             recete = hazirla_dizi_to_write(recete_dizi)
             i = 0
-            hedef_reg_taban = 2001
+            hedef_reg_taban = 208 + len(silindir_dizi)
             for send_recete in recete:
                 hedef_reg = hedef_reg_taban + (i * 120)
                 a = c.write_multiple_registers(hedef_reg, send_recete)
@@ -215,9 +234,7 @@ def plcGonder(recete_dizi, anahtar_dizi):
             if a is None or a is False:
                 err_list.append(False)
         # self.prgBarRec.setValue(60)
-        a = c.write_multiple_registers(100, anahtar_dizi)
-        if a is None or a is False:
-            err_list.append(False)
+
         # self.prgBarRec.setValue(70)
         # a = c.write_multiple_registers(1099, ayarlar_dizi_float)
         # if a is None or a is False:
@@ -236,5 +253,5 @@ def plcGonder(recete_dizi, anahtar_dizi):
 plc_arr = MakePlcArr(recete_dict, off_set, skala)
 slindir_arr, key_arr, plc_arr_int = plc_arr.convert_plc_arr()
 
-plcGonder(plc_arr_int, key_arr)
+plcGonder(plc_arr_int, key_arr, slindir_arr)
 
