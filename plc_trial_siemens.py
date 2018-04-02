@@ -44,7 +44,7 @@ class MakePlcArr():
         :return: renk_1, renk_2
         """
         sonuc = []
-        for any_dict in recete_dict:
+        for any_dict in dict_recete:
             temp_list = []
             for any_list in any_dict.values():
                 for val in any_list:
@@ -119,6 +119,12 @@ class MakePlcArr():
         return [sonuc_1, sonuc_2, sonuc_3, sonuc_4]
 
     def make_cylinder_recete(self, sorted_recete):
+        """
+        sıralı reçeteyi alır ve silindir ve recete hedefleri
+        şeklinde iki dizi olarak geri çeviri
+        :param sorted_recete:
+        :return:
+        """
         cylinder_arr = []
         recete_pcl_float = []
         for any_list in sorted_recete:
